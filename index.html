@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Browse condo units at Grand Caribbean at Dune Crest in Port Aransas, Texas.">
+  <title>Grand Caribbean Condo Guide</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="./" aria-label="Grand Caribbean condo guide home">
+      <span class="brand-mark">GC</span>
+      <span><strong>Grand Caribbean</strong><small>Port Aransas condo guide</small></span>
+    </a>
+    <a class="header-link" href="#condos">Browse condos</a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">PORT ARANSAS · MUSTANG ISLAND</p>
+        <h1>Find the Grand Caribbean condo that fits your trip.</h1>
+        <p class="lede">A simple independent directory for the 40-unit Gulf-front Grand Caribbean at Dune Crest complex.</p>
+        <form class="search-box" id="search-form" role="search">
+          <label for="search">Search by unit number or listing name</label>
+          <div class="search-row">
+            <input id="search" name="q" type="search" autocomplete="off" placeholder="Try 3008 or Grand Caribbean" autofocus>
+            <button type="submit">Search</button>
+          </div>
+        </form>
+      </div>
+      <aside class="property-card" aria-label="Property overview">
+        <span class="property-card__label">THE COMPLEX</span>
+        <h2>Grand Caribbean at Dune Crest</h2>
+        <p>5495 State Highway 361<br>Port Aransas, Texas</p>
+        <ul>
+          <li>40 condos across 4 floors</li>
+          <li>Boardwalk to the beach</li>
+          <li>Community pool &amp; BBQ area</li>
+          <li>Gulf views from the property</li>
+        </ul>
+      </aside>
+    </section>
+
+    <section class="browse" id="condos">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">CONDO DIRECTORY</p>
+          <h2>Browse all units</h2>
+        </div>
+        <div class="filters" aria-label="Floor filters">
+          <button class="filter is-active" data-floor="all">All</button>
+          <button class="filter" data-floor="1">1st</button>
+          <button class="filter" data-floor="2">2nd</button>
+          <button class="filter" data-floor="3">3rd</button>
+          <button class="filter" data-floor="4">4th</button>
+        </div>
+      </div>
+      <p class="result-count" id="result-count" aria-live="polite"></p>
+      <div class="unit-grid" id="unit-grid"></div>
+      <div class="empty-state" id="empty-state" hidden>
+        <h3>No condos match that search.</h3>
+        <p>Try a unit number such as <button class="inline-reset" type="button" data-query="3008">3008</button> or clear the search.</p>
+      </div>
+    </section>
+
+    <section class="about">
+      <p class="eyebrow">AT A GLANCE</p>
+      <h2>Beach access without leaving the complex.</h2>
+      <div class="about-grid">
+        <p>Grand Caribbean is a smaller Gulf-front condominium community south of central Port Aransas. The property has a pedestrian boardwalk through the dunes to the beach.</p>
+        <p>Community amenities include a pool, grilling area, and outdoor shower. Individual condos are independently owned, so interiors, sleeping arrangements, managers, and booking terms vary by unit.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Independent informational guide · Not affiliated with the HOA or any rental manager.</p>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
