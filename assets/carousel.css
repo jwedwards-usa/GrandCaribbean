@@ -1,2 +1,155 @@
-.rental-gallery{margin:28px 0}.carousel-head{display:flex;align-items:end;justify-content:space-between;gap:18px}.carousel-head h2{margin:.15rem 0 0}.carousel-count{white-space:nowrap;font-size:.82rem;font-weight:850;color:var(--muted)}.carousel-frame{position:relative;margin:12px 0 0;overflow:hidden;border:1px solid var(--line);border-radius:14px;background:#ece8d8;aspect-ratio:3/2}.carousel-image{display:block;width:100%;height:100%;object-fit:cover}.carousel-btn{position:absolute;z-index:2;top:50%;width:44px;height:44px;border:1px solid rgba(255,255,255,.8);border-radius:999px;background:rgba(33,33,29,.78);color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.22);transform:translateY(-50%);font-size:2rem;line-height:1;cursor:pointer}.carousel-btn:hover,.carousel-btn:focus-visible{background:#111;outline:3px solid var(--yellow);outline-offset:2px}.carousel-prev{left:12px}.carousel-next{right:12px}.carousel-caption{position:absolute;right:0;bottom:0;left:0;padding:34px 14px 12px;background:linear-gradient(transparent,rgba(0,0,0,.76));color:#fff;font-size:.86rem}.carousel-dots{display:flex;justify-content:center;gap:8px;margin:11px 0 2px}.carousel-dot{width:10px;height:10px;padding:0;border:1px solid var(--ink);border-radius:999px;background:transparent;cursor:pointer}.carousel-dot[aria-current="true"]{background:var(--ink)}.carousel-dot:focus-visible{outline:3px solid var(--yellow);outline-offset:3px}.carousel-source{margin:12px 0 0}.carousel-bandwidth{margin:.25rem 0 0}.listing-gallery-unavailable{background:#fffdf4}.listing-gallery-unavailable p{max-width:780px}.rental-gallery:focus-visible{outline:3px solid var(--yellow);outline-offset:4px}
-@media(max-width:520px){.carousel-head{align-items:start}.carousel-frame{aspect-ratio:4/3}.carousel-btn{width:42px;height:42px}.carousel-prev{left:8px}.carousel-next{right:8px}.carousel-caption{padding:30px 12px 10px}}
+.rental-gallery {
+  margin: 28px 0;
+}
+
+.carousel-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.carousel-head h2 {
+  margin: 0.15rem 0 0;
+}
+
+.carousel-count {
+  font-size: 0.82rem;
+  font-weight: 850;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.carousel-frame {
+  position: relative;
+  overflow: hidden;
+  margin: 12px 0 0;
+  aspect-ratio: 3 / 2;
+  background: #ece8d8;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+
+.carousel-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  width: 44px;
+  height: 44px;
+  color: #fff;
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+  background: rgba(33, 33, 29, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 999px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+  transform: translateY(-50%);
+}
+
+.carousel-btn:hover,
+.carousel-btn:focus-visible {
+  background: #111;
+  outline: 3px solid var(--yellow);
+  outline-offset: 2px;
+}
+
+.carousel-prev {
+  left: 12px;
+}
+
+.carousel-next {
+  right: 12px;
+}
+
+.carousel-caption {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 34px 14px 12px;
+  font-size: 0.86rem;
+  color: #fff;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.76));
+}
+
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 11px 0 2px;
+}
+
+.carousel-dot {
+  width: 10px;
+  height: 10px;
+  padding: 0;
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+}
+
+.carousel-dot[aria-current="true"] {
+  background: var(--ink);
+}
+
+.carousel-dot:focus-visible {
+  outline: 3px solid var(--yellow);
+  outline-offset: 3px;
+}
+
+.carousel-source {
+  margin: 12px 0 0;
+}
+
+.carousel-bandwidth {
+  margin: 0.25rem 0 0;
+}
+
+.listing-gallery-unavailable {
+  background: #fffdf4;
+}
+
+.listing-gallery-unavailable p {
+  max-width: 780px;
+}
+
+.rental-gallery:focus-visible {
+  outline: 3px solid var(--yellow);
+  outline-offset: 4px;
+}
+
+@media (max-width: 520px) {
+  .carousel-head {
+    align-items: start;
+  }
+
+  .carousel-frame {
+    aspect-ratio: 4 / 3;
+  }
+
+  .carousel-btn {
+    width: 42px;
+    height: 42px;
+  }
+
+  .carousel-prev {
+    left: 8px;
+  }
+
+  .carousel-next {
+    right: 8px;
+  }
+
+  .carousel-caption {
+    padding: 30px 12px 10px;
+  }
+}

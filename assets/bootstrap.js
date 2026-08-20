@@ -46,8 +46,6 @@
     if (unit) {
       await loadScript('assets/carousel.js');
     }
-
-    await loadScript('assets/crosschecks.js');
   };
 
   start().catch((error) => {
