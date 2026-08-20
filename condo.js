@@ -13,6 +13,7 @@
   try{
     for(let i=1;i<=8;i++) await load(`assets/research-${i}.js`);
     await load('assets/render.js');
+    await load('assets/crosschecks.js');
   }catch(err){
     console.error(err);
     document.getElementById('condo-content').innerHTML='<p>Condo research data could not load. <a href="../index.html">Open the condo directory</a>.</p>';
