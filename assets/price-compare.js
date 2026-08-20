@@ -4,31 +4,6 @@
   const requestedUnit = document.body.dataset.unit
     || new URLSearchParams(window.location.search).get('unit');
 
-  const appendLandingSummary = () => {
-    const verifiedUnits = units.filter((unit) => unit.status === 'verified');
-    const multiPlatformUnits = verifiedUnits.filter((unit) => audit[unit.unit]?.multiPlatform);
-    const singlePlatformUnits = verifiedUnits.filter(
-      (unit) => audit[unit.unit] && !audit[unit.unit].multiPlatform,
-    );
-    const notice = document.querySelector('#units .notice');
-
-    if (!notice || !verifiedUnits.length) {
-      return;
-    }
-
-    const summary = document.createElement('span');
-    summary.append(
-      ` ${multiPlatformUnits.length} of ${verifiedUnits.length} active rentals have 2+ validated booking platforms for price comparison.`,
-    );
-
-    if (singlePlatformUnits.length) {
-      const exceptions = singlePlatformUnits.map((unit) => `GC${unit.unit}`).join(', ');
-      summary.append(` Audit exception: ${exceptions} currently has only one independently verified platform.`);
-    }
-
-    notice.append(summary);
-  };
-
   const createComparisonNotice = (result) => {
     const notice = document.createElement('div');
     notice.className = `notice${result.multiPlatform ? '' : ' warn'}`;
@@ -47,7 +22,6 @@
   };
 
   if (!requestedUnit) {
-    appendLandingSummary();
     return;
   }
 

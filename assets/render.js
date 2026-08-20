@@ -3,7 +3,6 @@
   const meta = window.GC_META;
   const units = window.GC_UNITS || [];
 
-  const DUNE_CREST_URL = 'https://dunecrest.com/';
   const PROPERTY_PHOTO_SOURCE = 'https://www.portaescapes.com/rentals/grand-caribbean-gc1007';
   const PROPERTY_PHOTOS = [
     {
@@ -153,17 +152,13 @@
       <header class="top">
         <div class="wrap">
           <a class="brand" href="./">Grand Caribbean · Port A</a>
-          <small>
-            Unofficial condo guide · sources checked ${escapeHtml(meta.researchedOn)}
-            · <a href="${DUNE_CREST_URL}" target="_blank" rel="noopener">Dune Crest site</a>
-          </small>
+          <small>Unofficial condo guide · sources checked ${escapeHtml(meta.researchedOn)}</small>
         </div>
       </header>
       ${content}
       <footer class="footer">
         <div class="wrap">
           Unofficial guide. Verify availability, prices, STR status and property records with the linked source.
-          · <a href="${DUNE_CREST_URL}" target="_blank" rel="noopener">Grand Caribbean at Dune Crest</a>
         </div>
       </footer>
     `;
@@ -198,7 +193,6 @@
         <p class="source-note property-photo-source">
           <strong>Property photos:</strong>
           <a href="${PROPERTY_PHOTO_SOURCE}" target="_blank" rel="noopener">current Grand Caribbean rental listing</a>
-          · <a href="${DUNE_CREST_URL}" target="_blank" rel="noopener">Grand Caribbean at Dune Crest site</a>
           · checked ${escapeHtml(meta.researchedOn)}.
         </p>
       </section>
@@ -235,12 +229,7 @@
   function renderLanding() {
     document.title = 'Grand Caribbean Condo Guide | Port Aransas';
 
-    const counts = Object.fromEntries(
-      ['verified', 'contact', 'no-current'].map((status) => [
-        status,
-        units.filter((unit) => unit.status === status).length,
-      ]),
-    );
+    const onlineRentalCount = units.filter((unit) => unit.status === 'verified').length;
     const heroPhoto = PROPERTY_PHOTOS[1];
     const heroSmall = propertyPhotoUrl(heroPhoto.src, 720);
     const heroLarge = propertyPhotoUrl(heroPhoto.src, 1200);
@@ -251,14 +240,9 @@
           <div class="hero-copy">
             <div class="eyebrow">Mustang Island · Port Aransas, Texas</div>
             <h1>Grand Caribbean condo directory</h1>
-            <p>Search all ${units.length} condos. Compare rooms, guest capacity and current rental links; units without a live booking page include property history.</p>
-            <p class="property-site-link">
-              <a class="action" href="${DUNE_CREST_URL}" target="_blank" rel="noopener">Grand Caribbean at Dune Crest ↗</a>
-            </p>
+            <p>Search all ${units.length} condos. Compare rooms, guest capacity and current rental links.</p>
             <div class="stats">
-              <div class="stat"><strong>${counts.verified}</strong><br>online rentals</div>
-              <div class="stat"><strong>${counts.contact}</strong><br>not available to rent</div>
-              <div class="stat"><strong>${counts['no-current']}</strong><br>no current booking link</div>
+              <div class="stat"><strong>${onlineRentalCount}</strong><br>online rentals</div>
             </div>
           </div>
           <a class="hero-media" href="${PROPERTY_PHOTO_SOURCE}" target="_blank" rel="noopener" aria-label="Open the source listing for this Grand Caribbean property photo">
@@ -277,7 +261,6 @@
       </section>
       <main class="section" id="units">
         <div class="wrap">
-          <div class="notice"><strong>Booking links:</strong> shown only for exact-unit matches. On-site occupancy and listing capacity stay separate when they differ.</div>
           <div class="filters">
             <input id="q" type="search" placeholder="Search 3008, Beach Haven, STR…" aria-label="Search condos">
             <select id="status">
