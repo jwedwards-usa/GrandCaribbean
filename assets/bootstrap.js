@@ -35,6 +35,7 @@
     );
 
     await loadScript('assets/booking-audit.js');
+    await loadScript('assets/portoro-audit.js');
 
     window.GC_UNITS?.sort((left, right) => left.unit.localeCompare(right.unit));
     const hasUnit = Boolean(
