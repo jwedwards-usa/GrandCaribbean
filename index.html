@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Browse condo units at Grand Caribbean at Dune Crest in Port Aransas, Texas.">
+  <meta name="description" content="Browse condo units, rental references and property photos for Grand Caribbean at Dune Crest in Port Aransas, Texas.">
   <title>Grand Caribbean Condo Guide</title>
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -20,27 +20,40 @@
     <section class="hero">
       <div class="hero-copy">
         <p class="eyebrow">PORT ARANSAS · MUSTANG ISLAND</p>
-        <h1>Find the Grand Caribbean condo that fits your trip.</h1>
-        <p class="lede">A simple independent directory for the 40-unit Gulf-front Grand Caribbean at Dune Crest complex.</p>
+        <h1>A simple guide to the condos at Grand Caribbean.</h1>
+        <p class="lede">Browse all 40 units, public rental listings, and rental contacts photographed on-site. Sources stay separate so it is clear what came from a live listing versus a placard at the complex.</p>
         <form class="search-box" id="search-form" role="search">
-          <label for="search">Search by unit number or listing name</label>
+          <label for="search">Search unit, listing, manager, phone, or STR number</label>
           <div class="search-row">
-            <input id="search" name="q" type="search" autocomplete="off" placeholder="Try 3008 or Grand Caribbean" autofocus>
+            <input id="search" name="q" type="search" autocomplete="off" placeholder="Try 3008, Sand Key, or 200105612" autofocus>
             <button type="submit">Search</button>
           </div>
         </form>
+        <div class="hero-notes" aria-label="Site highlights">
+          <span><strong>40</strong> units</span>
+          <span><strong>4</strong> floors</span>
+          <span>Low-bandwidth photos</span>
+        </div>
       </div>
-      <aside class="property-card" aria-label="Property overview">
-        <span class="property-card__label">THE COMPLEX</span>
+
+      <figure class="hero-photo">
+        <img src="assets/photos/jolly-yellow-exterior.webp" alt="Yellow Grand Caribbean exterior and white railings seen from an upper floor" width="480" height="360" decoding="async" fetchpriority="high">
+        <figcaption>The complex’s sunny yellow exterior from an upper-floor breezeway.</figcaption>
+      </figure>
+    </section>
+
+    <section class="property-strip" aria-label="Property overview">
+      <div>
+        <p class="eyebrow">THE COMPLEX</p>
         <h2>Grand Caribbean at Dune Crest</h2>
-        <p>5495 State Highway 361<br>Port Aransas, Texas</p>
-        <ul>
-          <li>40 condos across 4 floors</li>
-          <li>Boardwalk to the beach</li>
-          <li>Community pool &amp; BBQ area</li>
-          <li>Gulf views from the property</li>
-        </ul>
-      </aside>
+        <p>5495 State Highway 361 · Port Aransas, Texas</p>
+      </div>
+      <ul>
+        <li>Boardwalk to the beach</li>
+        <li>Community pool</li>
+        <li>BBQ area</li>
+        <li>Outdoor shower</li>
+      </ul>
     </section>
 
     <section class="browse" id="condos">
@@ -57,6 +70,10 @@
           <button class="filter" data-floor="4">4th</button>
         </div>
       </div>
+      <div class="directory-legend" aria-label="Directory status legend">
+        <span><i class="legend-dot legend-dot--online"></i><strong>Online listing</strong> = public booking page found</span>
+        <span><i class="legend-dot legend-dot--contact"></i><strong>Rental contact</strong> = contact photographed on-site</span>
+      </div>
       <p class="result-count" id="result-count" aria-live="polite"></p>
       <div class="unit-grid" id="unit-grid"></div>
       <div class="empty-state" id="empty-state" hidden>
@@ -65,12 +82,32 @@
       </div>
     </section>
 
+    <section class="photos" aria-labelledby="photos-title">
+      <div class="section-heading section-heading--simple">
+        <div>
+          <p class="eyebrow">AROUND THE PROPERTY</p>
+          <h2 id="photos-title">A few lightweight reference photos</h2>
+          <p class="section-copy">These are common-area and view photos from the property, not interior photos for a specific rental.</p>
+        </div>
+      </div>
+      <div class="photo-grid">
+        <figure>
+          <img src="assets/photos/upper-floor-view.webp" alt="View from an upper floor across nearby homes, parking and coastal grassland" width="640" height="480" loading="lazy" decoding="async">
+          <figcaption>Upper-floor view across neighboring homes and coastal flats.</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/photos/fourth-floor-breezeway.webp" alt="Fourth-floor Grand Caribbean breezeway beside unit 4010 overlooking green marshland" width="480" height="360" loading="lazy" decoding="async">
+          <figcaption>Fourth-floor breezeway beside unit 4010, looking toward the marsh.</figcaption>
+        </figure>
+      </div>
+    </section>
+
     <section class="about">
-      <p class="eyebrow">AT A GLANCE</p>
-      <h2>Beach access without leaving the complex.</h2>
+      <p class="eyebrow">HOW TO USE THIS GUIDE</p>
+      <h2>Check the source before you book.</h2>
       <div class="about-grid">
-        <p>Grand Caribbean is a smaller Gulf-front condominium community south of central Port Aransas. The property has a pedestrian boardwalk through the dunes to the beach.</p>
-        <p>Community amenities include a pool, grilling area, and outdoor shower. Individual condos are independently owned, so interiors, sleeping arrangements, managers, and booking terms vary by unit.</p>
+        <p>Individual condos are independently owned, and rental managers can change. A public online listing and an on-site rental placard may not always name the same company.</p>
+        <p>When sources disagree, both are shown with their context and date rather than quietly choosing one. Confirm the current manager, unit number, and payment destination before sending money.</p>
       </div>
     </section>
   </main>
