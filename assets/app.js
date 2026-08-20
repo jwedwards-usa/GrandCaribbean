@@ -34,7 +34,7 @@
   }
 
   function cardMarkup(u) {
-    const href = `?unit=${u.id}`;
+    const href = `units/${u.id}.html`;
     const manager = contactText(u) || 'Rental contact not captured';
     return `
       <a class="unit-card" href="${href}" data-search="${[
@@ -241,8 +241,8 @@
               </div>
 
               <div class="sibling-nav">
-                <span>${prev ? `<a href="?unit=${prev.id}">← Unit ${prev.id}</a>` : ''}</span>
-                <span>${next ? `<a href="?unit=${next.id}">Unit ${next.id} →</a>` : ''}</span>
+                <span>${prev ? `<a href="units/${prev.id}.html">← Unit ${prev.id}</a>` : ''}</span>
+                <span>${next ? `<a href="units/${next.id}.html">Unit ${next.id} →</a>` : ''}</span>
               </div>
             </div>
 
@@ -258,7 +258,7 @@
       <footer class="site-footer"><div class="footer-inner"><strong>Grand Caribbean Condo Guide</strong> · <a href="./#units">Browse all condos</a></div></footer>`;
   }
 
-  const unitId = new URLSearchParams(window.location.search).get('unit');
+  const unitId = document.body.dataset.unit || new URLSearchParams(window.location.search).get('unit');
   if (unitId) {
     renderUnit(unitId);
   } else {
