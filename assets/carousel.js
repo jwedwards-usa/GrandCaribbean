@@ -50,7 +50,7 @@
   }
 
   function sourceLine(record){
-    return `<p class="carousel-source source-note"><strong>Source:</strong> <a href="${esc(record.sourceUrl)}" target="_blank" rel="noopener noreferrer">${esc(record.sourceLabel)}</a> · <strong>Photo date:</strong> ${esc(record.imageDate||'Not published')} · checked ${esc(record.checked||'2026-08-19')}.</p>`;
+    return `<p class="carousel-source source-note"><strong>Photos:</strong> from <a href="${esc(record.sourceUrl)}" target="_blank" rel="noopener noreferrer">${esc(record.sourceLabel)}</a> · photo date ${esc(record.imageDate||'not published')} · checked ${esc(record.checked||'2026-08-19')}.</p><p><a class="action" href="${esc(record.sourceUrl)}" target="_blank" rel="noopener noreferrer">View all photos on listing ↗</a></p>`;
   }
 
   function render(unit){
@@ -60,15 +60,15 @@
     if(!photos.length){
       return `<section class="rental-gallery panel listing-gallery-unavailable" data-rental-gallery-root aria-label="Rental listing photo source for condo ${esc(unit.unit)}"><div class="carousel-head"><div><div class="eyebrow">Exact-unit listing</div><h2>Rental listing photos</h2></div></div><p>${esc(record.unavailableReason||'Photos are available on the listing, but no stable image files are available for this page.')}</p>${sourceLine(record)}</section>`;
     }
-    const p=photos[0], many=photos.length>1;
-    return `<section class="rental-gallery panel" data-rental-gallery-root data-rental-carousel data-unit="${esc(unit.unit)}" tabindex="0" aria-label="Rental listing photos for condo ${esc(unit.unit)}"><div class="carousel-head"><div><div class="eyebrow">Exact-unit listing</div><h2>Rental listing photos</h2></div><span class="carousel-count" data-carousel-count>1 / ${photos.length}</span></div><figure class="carousel-frame"><img class="carousel-image" data-carousel-image src="${esc(optimized(p.src))}" data-raw-src="${esc(p.src)}" alt="${esc(p.alt||`Condo ${unit.unit} rental listing photo 1`)}" loading="lazy" decoding="async" fetchpriority="low" referrerpolicy="no-referrer" width="900" height="600">${many?`<button class="carousel-btn carousel-prev" type="button" data-carousel-prev aria-label="Previous rental photo">‹</button><button class="carousel-btn carousel-next" type="button" data-carousel-next aria-label="Next rental photo">›</button>`:''}<figcaption class="carousel-caption" data-carousel-caption aria-live="polite">${esc(p.caption||`Rental listing photo 1 of ${photos.length}.`)}</figcaption></figure>${many?`<div class="carousel-dots" aria-label="Choose rental photo">${photos.map((_,i)=>`<button type="button" class="carousel-dot" data-carousel-dot="${i}" aria-label="Show photo ${i+1}" aria-current="${i===0?'true':'false'}"></button>`).join('')}</div>`:''}${sourceLine(record)}</section>`;
+    const p=photos[0], many=photos.length>1, showDots=photos.length<=10;
+    return `<section class="rental-gallery panel" data-rental-gallery-root data-rental-carousel data-unit="${esc(unit.unit)}" tabindex="0" aria-label="Rental listing photos for condo ${esc(unit.unit)}"><div class="carousel-head"><div><div class="eyebrow">Exact-unit listing</div><h2>Rental listing photos</h2></div><span class="carousel-count" data-carousel-count>1 / ${photos.length}</span></div><figure class="carousel-frame"><img class="carousel-image" data-carousel-image src="${esc(optimized(p.src))}" data-raw-src="${esc(p.src)}" alt="${esc(p.alt||`Condo ${unit.unit} rental listing photo 1`)}" loading="lazy" decoding="async" fetchpriority="low" referrerpolicy="no-referrer" width="900" height="600">${many?`<button class="carousel-btn carousel-prev" type="button" data-carousel-prev aria-label="Previous rental photo">‹</button><button class="carousel-btn carousel-next" type="button" data-carousel-next aria-label="Next rental photo">›</button>`:''}<figcaption class="carousel-caption" data-carousel-caption aria-live="polite">${esc(p.caption||`Rental listing photo 1 of ${photos.length}.`)}</figcaption></figure>${many&&showDots?`<div class="carousel-dots" aria-label="Choose rental photo">${photos.map((_,i)=>`<button type="button" class="carousel-dot" data-carousel-dot="${i}" aria-label="Show photo ${i+1}" aria-current="${i===0?'true':'false'}"></button>`).join('')}</div>`:''}${sourceLine(record)}</section>`;
   }
 
   function bind(){
     document.querySelectorAll('[data-rental-carousel]').forEach(el=>{
       const record=galleries()[el.dataset.unit], photos=uniqueImages(record);
       if(!record||!photos.length)return;
-      let index=0;
+      let index=0, touchX=null;
       const image=el.querySelector('[data-carousel-image]');
       const count=el.querySelector('[data-carousel-count]');
       const caption=el.querySelector('[data-carousel-caption]');
@@ -96,6 +96,14 @@
         if(event.key==='ArrowLeft'){event.preventDefault();show(index-1)}
         if(event.key==='ArrowRight'){event.preventDefault();show(index+1)}
       });
+      el.addEventListener('touchstart',event=>{touchX=event.touches[0]?.clientX??null},{passive:true});
+      el.addEventListener('touchend',event=>{
+        if(touchX==null)return;
+        const end=event.changedTouches[0]?.clientX??touchX, delta=end-touchX;
+        touchX=null;
+        if(Math.abs(delta)<45)return;
+        show(index+(delta<0?1:-1));
+      },{passive:true});
     });
   }
 
@@ -106,7 +114,7 @@
     if(!unit)return;
     const html=render(unit);
     if(!html)return;
-    const anchor=document.querySelector('.detail .gallery')||document.querySelector('.unit-nav');
+    const anchor=document.querySelector('.unit-nav');
     if(!anchor)return;
     anchor.insertAdjacentHTML('beforebegin',html);
     bind();
