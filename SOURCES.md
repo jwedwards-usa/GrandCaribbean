@@ -18,7 +18,7 @@ The embedded count is not a claim that a listing has no additional photos. Every
 | 2001 | Life In Paradise — 2001GC Turtley Awesome | **29** | 2026-08-19 |
 | 2002 | Airbnb — Grand Caribbean 2002 | 3 | 2026-08-19 |
 | 2005 | Vrbo — Indigo Breeze 2005 | 3 | 2026-08-19 |
-| 2008 | Hotels.com / Silver Sands — Condo #2008 | 2 | 2026-08-19 |
+| 2008 | Vrbo / Silver Sands — Condo #2008 | 1 verified exact-unit image | 2026-08-19 |
 | 2009 | PortAransas-US — Grand Caribbean 2009 | 3 | 2026-08-19 |
 | 3001 | Life In Paradise — 3001GC Sunrise Beach Escape | 3 | 2026-08-19 |
 | 3002 | Expedia — Grand Carribean AGC 3002 | Source-link fallback* | 2026-08-19 |
@@ -35,4 +35,4 @@ The embedded count is not a claim that a listing has no additional photos. Every
 ## Property-level references
 
 - Grand Caribbean at Dune Crest: https://dunecrest.com/
-- Current Grand Caribbean property/rental overview used for the refreshed shared property photography: https://www.portaescapes.com/resort/grand-caribbean
+- Current exterior/pool/boardwalk photography comes from live Grand Caribbean rental listings and is linked from the site.
