@@ -12,7 +12,9 @@
   const load=src=>new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=()=>reject(new Error(`Failed to load ${src}`));document.head.appendChild(s)});
   try{
     for(let i=1;i<=8;i++) await load(`assets/research-${i}.js`);
+    await load(`assets/galleries-${unit[0]}.js`);
     await load('assets/render.js');
+    await load('assets/carousel.js');
     await load('assets/crosschecks.js');
   }catch(err){
     console.error(err);
