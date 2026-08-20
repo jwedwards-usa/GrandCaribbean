@@ -1,6 +1,6 @@
 # Grand Caribbean Condo Guide
 
-Static GitHub Pages directory for Grand Caribbean at Dune Crest in Port Aransas, Texas.
+Static GitHub Pages directory for Grand Caribbean in Port Aransas, Texas.
 
 **Live site:** https://jwedwards-usa.github.io/GrandCaribbean/
 

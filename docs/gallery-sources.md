@@ -36,5 +36,4 @@ Most rental sites do not publish the original capture or upload date for individ
 
 The landing-page hero and shared property gallery use current exterior, pool, and boardwalk photography from the Port A Escapes GC1007 listing. These images are presented as property-level photography, not as Unit 1007 interior photography.
 
-- Grand Caribbean at Dune Crest: https://dunecrest.com/
 - Property photo source: https://www.portaescapes.com/rentals/grand-caribbean-gc1007
