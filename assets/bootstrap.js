@@ -34,6 +34,8 @@
       Array.from({ length: 8 }, (_, index) => loadScript(`assets/research-${index + 1}.js`)),
     );
 
+    await loadScript('assets/booking-audit.js');
+
     window.GC_UNITS?.sort((left, right) => left.unit.localeCompare(right.unit));
     const hasUnit = Boolean(
       unit && window.GC_UNITS?.some((candidate) => candidate.unit === unit),
@@ -44,6 +46,7 @@
     }
 
     await loadScript('assets/render.js');
+    await loadScript('assets/price-compare.js');
 
     if (hasUnit) {
       await loadScript('assets/carousel.js');
