@@ -35,15 +35,17 @@
     );
 
     window.GC_UNITS?.sort((left, right) => left.unit.localeCompare(right.unit));
-    await loadScript('assets/current-overrides.js');
+    const hasUnit = Boolean(
+      unit && window.GC_UNITS?.some((candidate) => candidate.unit === unit),
+    );
 
-    if (unit) {
+    if (hasUnit) {
       await loadScript(`assets/galleries-${unit[0]}.js`);
     }
 
     await loadScript('assets/render.js');
 
-    if (unit) {
+    if (hasUnit) {
       await loadScript('assets/carousel.js');
     }
   };
