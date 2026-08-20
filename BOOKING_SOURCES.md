@@ -23,8 +23,10 @@ The goal is price comparison, so direct manager pages and third-party booking pl
 | 3002 | JTB | https://www.jtb.co.jp/ovs_htl/detail/search_detail/1066531/ | Exact `Grand Carribean AGC 3002`, 5495 State Highway 361 |
 | 3002 | Hotels.ru | https://www.hotels.ru/rus/hotels/united_states/port_aransas/grand_carribean_agc_3002.htm | Exact `Grand Carribean AGC 3002`; separate booking/payment route |
 | 3004 | Airbnb | https://www.airbnb.com/rooms/1081869189988434900 | Exact `Gulf'n My Life Away` + Starkey/Portoro operator match |
+| 3004 | Portoro | https://www.portoro.com/properties/gulfn-my-life-away-starkey-by-portoro | Exact `Gulf'n My Life Away`; Portoro identifies a third-floor Grand Caribbean condo, 2 BR / 2 BA / 6 guests, with direct Book now inventory |
 | 3007 | Airbnb | https://www.airbnb.com/rooms/1421165774159268720 | Exact STR 200105660 |
 | 3007 | Vrbo | https://www.vrbo.com/4502644 | Exact STR 200105660 + Port A Escapes listing identity |
+| 3010 | Portoro | https://www.portoro.com/properties/beach-haven-starkey-by-portoro | Exact `Beach Haven`; Portoro identifies a third-floor Grand Caribbean condo, 3 BR / 3 BA / 8 guests, with direct Book now inventory |
 | 4001 | Airbnb | https://www.airbnb.com/rooms/1329922891657403234 | Exact STR 200105668 |
 | 4001 | Vrbo | https://www.vrbo.com/4347177 | Exact STR 200105668 + Port A Escapes listing identity |
 
@@ -34,7 +36,7 @@ For **Unit 2008**, the old generic Vrbo/Silver Sands unit-selector link is repla
 
 A second focused sweep was run after the initial audit because Expedia-family distribution did not provide useful price-comparison diversity. The Hotels.com mirror is therefore omitted from the site as redundant with Expedia. Exact non-Expedia inventory was validated on Ostrovok, T-Bank Travel, JTB and Hotels.ru.
 
-Portoro was checked directly because it manages other Grand Caribbean condos, including `Beach Haven` and `Gulf'n My Life Away`. Its current Port Aransas inventory and indexed property pages did not surface `3002`, `AGC 3002`, `Grand Caribbean`, or `Grand Carribean` as an exact Unit 3002 match. No Portoro link is attached to GC3002 unless that exact unit becomes identifiable there later.
+Portoro was checked directly because it manages other Grand Caribbean condos. Exact Portoro pages were validated for **GC3004 / Gulf'n My Life Away** and **GC3010 / Beach Haven**, and those direct manager links are now attached to their condo pages. Portoro's current Port Aransas inventory and indexed property pages did not surface `3002`, `AGC 3002`, `Grand Caribbean`, or `Grand Carribean` as an exact Unit 3002 match, so no Portoro link is attached to GC3002 unless that exact unit becomes identifiable there later.
 
 No independently indexed owner-direct or local-manager book-now page for exact GC3002 was validated in this pass. The four new links are therefore labeled as third-party distributors, not direct/owner booking.
 
