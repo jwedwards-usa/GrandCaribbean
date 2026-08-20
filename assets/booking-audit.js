@@ -96,10 +96,34 @@
     ],
     '3002': [
       {
-        channel: 'Hotels.com',
-        url: 'https://hotels.com.au/property/16881544/grand-carribean-agc-3002',
-        details: 'Grand Carribean AGC 3002; 3-bedroom entire condo; sleeps 10',
-        validation: 'Exact property name/address/layout match',
+        channel: 'Ostrovok',
+        url: 'https://ostrovok.ru/hotel/united_states_of_america/port_aransas/mid8760464/grand_carribean_agc_3002_2/',
+        details: 'Grand Carribean AGC 3002; independent non-Expedia booking inventory with live room pricing',
+        validation: 'Exact property title + 5495 State Highway 361 address match',
+        checked,
+        secondary: true,
+      },
+      {
+        channel: 'T-Bank Travel',
+        url: 'https://www.tbank.ru/travel/hotels/new/hotels/1843624/',
+        details: 'Grand Carribean AGC 3002; independent travel-booking inventory',
+        validation: 'Exact property title + Port Aransas address match',
+        checked,
+        secondary: true,
+      },
+      {
+        channel: 'JTB',
+        url: 'https://www.jtb.co.jp/ovs_htl/detail/search_detail/1066531/',
+        details: 'Grand Carribean AGC 3002; separate international booking channel',
+        validation: 'Exact property title + 5495 State Highway 361 address match',
+        checked,
+        secondary: true,
+      },
+      {
+        channel: 'Hotels.ru',
+        url: 'https://www.hotels.ru/rus/hotels/united_states/port_aransas/grand_carribean_agc_3002.htm',
+        details: 'Grand Carribean AGC 3002; separate booking/payment route outside Expedia inventory',
+        validation: 'Exact property title match',
         checked,
         secondary: true,
       },
@@ -154,6 +178,7 @@
 
   const weakerUrlsToReplace = new Set([
     'https://www.vrbo.com/en-sg/pdp/lo/105173239',
+    'https://hotels.com.au/property/16881544/grand-carribean-agc-3002',
   ]);
 
   Object.entries(additions).forEach(([unitNumber, newBookings]) => {
@@ -173,6 +198,11 @@
 
   const shoreThang = byUnit.get('2008');
   if (shoreThang) shoreThang.name = 'Shore Thang';
+
+  const agc3002 = byUnit.get('3002');
+  if (agc3002) {
+    agc3002.note = 'Focused Aug. 19 follow-up found several exact non-Expedia booking distributors for AGC 3002. Expedia remains as the original listing source, but its Hotels.com mirror is omitted as redundant. No independently indexed owner-direct or local-manager book-now page for exact Unit 3002 was validated, so the additional links are labeled as third-party distributors rather than direct booking.';
+  }
 
   const platformAliases = {
     'Vrbo / Silver Sands': 'Vrbo',
