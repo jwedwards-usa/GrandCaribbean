@@ -2,15 +2,98 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Unofficial low-bandwidth directory for Grand Caribbean condos in Port Aransas, Texas, with unit numbers, occupancy, STR and rental-contact references.">
-  <meta name="theme-color" content="#f6d447">
-  <title>Grand Caribbean Condo Guide | Port Aransas</title>
-  <link rel="stylesheet" href="assets/styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A simple, photo-informed guide to Grand Caribbean condominiums in Port Aransas, Texas, including unit contacts and posted STR details.">
+  <title>Grand Caribbean Condo Guide</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <noscript>This site needs JavaScript for search and condo pages.</noscript>
-  <script src="assets/data.js"></script>
-  <script src="assets/app.js"></script>
+  <header class="site-header">
+    <a class="brand" href="./" aria-label="Grand Caribbean Condo Guide home">
+      <span class="brand-mark">☀</span>
+      <span>Grand Caribbean</span>
+    </a>
+    <span class="header-note">Port Aransas, Texas</span>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Independent condo guide</p>
+        <h1>Find a Grand Caribbean unit and who rents it.</h1>
+        <p class="lede">Search the units we have identified from on-site photos. Where a registration sign was visible, the posted maximum occupancy, STR or registration number, rental contact, and phone number are included.</p>
+        <a class="button primary" href="#units">Browse units</a>
+      </div>
+      <figure class="hero-photo">
+        <img src="assets/upper-floor-view.webp" alt="Upper-floor view from Grand Caribbean toward the surrounding Port Aransas landscape" width="800" height="600" fetchpriority="high">
+        <figcaption>On-site photo, August 2026</figcaption>
+      </figure>
+    </section>
+
+    <section class="search-panel" id="units" aria-labelledby="units-heading">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Condo directory</p>
+          <h2 id="units-heading">Search observed units</h2>
+        </div>
+        <p id="result-count" class="result-count" aria-live="polite"></p>
+      </div>
+
+      <div class="filters">
+        <label>
+          <span>Search</span>
+          <input id="search" type="search" placeholder="Unit, manager, phone, STR…" autocomplete="off">
+        </label>
+        <label>
+          <span>Floor</span>
+          <select id="floor-filter">
+            <option value="">All floors</option>
+            <option value="1">1st floor</option>
+            <option value="2">2nd floor</option>
+            <option value="3">3rd floor</option>
+            <option value="4">4th floor</option>
+          </select>
+        </label>
+        <label>
+          <span>Max occupancy</span>
+          <select id="occupancy-filter">
+            <option value="">Any / unknown</option>
+            <option value="6">6</option>
+            <option value="8">8</option>
+          </select>
+        </label>
+      </div>
+
+      <div id="condo-grid" class="condo-grid"></div>
+      <p id="empty-state" class="empty-state" hidden>No matching units yet. Try a different search or filter.</p>
+    </section>
+
+    <section class="property-notes">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">What the photos show</p>
+          <h2>A bright, open-air coastal complex</h2>
+        </div>
+      </div>
+      <div class="notes-layout">
+        <div class="note-copy">
+          <p>The on-site photos show the complex’s distinctive yellow exterior, open-air walkways, and broad upper-floor views across the surrounding low coastal landscape. Several third- and fourth-floor doors were also photographed, helping confirm unit numbers even where no rental placard was visible.</p>
+          <p class="disclaimer">This is a reference guide, not the property manager or booking agent. Rental contacts and permit information are transcribed from signs visible at the property and can change. Confirm current details before booking.</p>
+        </div>
+        <div class="mini-gallery">
+          <img src="assets/yellow-corridor.webp" alt="Yellow exterior and open-air corridor at Grand Caribbean" loading="lazy" width="800" height="600">
+          <img src="assets/marsh-view.webp" alt="Wide grassy coastal view from an upper floor at Grand Caribbean" loading="lazy" width="800" height="600">
+          <img src="assets/open-air-walkway.webp" alt="Open-air walkway and unit door at Grand Caribbean" loading="lazy" width="800" height="600">
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Grand Caribbean Condo Guide · Photo-informed reference updated August 2026.</p>
+  </footer>
+
+  <script src="condo-data.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
