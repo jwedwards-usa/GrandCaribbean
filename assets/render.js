@@ -1,64 +1,480 @@
-(()=>{
-const root=document.querySelector('#app')||document.body;
-const meta=window.GC_META, units=window.GC_UNITS;
-const statusLabel={verified:'Book online',contact:'Contact to rent','no-current':'No current booking link'};
-const money=n=>n==null?'—':new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(n);
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const unitHref=u=>`condos/${encodeURIComponent(u.unit)}.html`;
-function approxSeries(r){
-  const start=r.tableStartYear||2026, tax=Object.fromEntries(Object.entries(r.tax||{}).map(([k,v])=>[+k,+v]));
-  const years=[]; for(let y=2026;y>=start;y--) years.push(y);
-  const keys=Object.keys(tax).map(Number).sort((a,b)=>a-b); const latest=keys.length?Math.max(...keys):null;
-  function taxBasis(y){
-    if(tax[y]) return tax[y];
-    const below=keys.filter(k=>k<y).pop(), above=keys.find(k=>k>y);
-    if(below&&above){const t=(y-below)/(above-below);return Math.round(tax[below]+(tax[above]-tax[below])*t)}
-    if(below) return tax[below]; if(above) return tax[above]; return null;
+(() => {
+  const root = document.querySelector('#app') || document.body;
+  const meta = window.GC_META;
+  const units = window.GC_UNITS || [];
+
+  const STATUS_LABELS = {
+    verified: 'Book online',
+    contact: 'Not available to rent',
+    'no-current': 'No current booking link',
+  };
+
+  const escapeHtml = (value) => String(value ?? '').replace(
+    /[&<>"']/g,
+    (character) => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;',
+    })[character],
+  );
+
+  const formatMoney = (value) => {
+    if (value == null) {
+      return '—';
+    }
+
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 0,
+    }).format(value);
+  };
+
+  const unitHref = (unit) => `condos/${encodeURIComponent(unit.unit)}.html`;
+
+  function buildValueHistory(realty) {
+    const startYear = realty.tableStartYear || 2026;
+    const tax = Object.fromEntries(
+      Object.entries(realty.tax || {}).map(([year, value]) => [Number(year), Number(value)]),
+    );
+    const taxYears = Object.keys(tax).map(Number).sort((left, right) => left - right);
+    const latestTaxYear = taxYears.length ? Math.max(...taxYears) : null;
+    const years = [];
+
+    for (let year = 2026; year >= startYear; year -= 1) {
+      years.push(year);
+    }
+
+    const taxBasis = (year) => {
+      if (tax[year]) {
+        return tax[year];
+      }
+
+      const below = taxYears.filter((candidate) => candidate < year).pop();
+      const above = taxYears.find((candidate) => candidate > year);
+
+      if (below && above) {
+        const progress = (year - below) / (above - below);
+        return Math.round(tax[below] + (tax[above] - tax[below]) * progress);
+      }
+
+      if (below) {
+        return tax[below];
+      }
+
+      if (above) {
+        return tax[above];
+      }
+
+      return null;
+    };
+
+    if (taxYears.length && realty.currentApprox) {
+      const scale = realty.currentApprox / tax[latestTaxYear];
+
+      return years.map((year) => ({
+        year,
+        approximate: year === 2026
+          ? realty.currentApprox
+          : Math.round((taxBasis(Math.min(year, latestTaxYear)) * scale) / 1000) * 1000,
+        published: tax[year] || null,
+        source: year === 2026
+          ? '2026 preliminary'
+          : tax[year]
+            ? 'Published record'
+            : 'Not available',
+      }));
+    }
+
+    let historical = null;
+
+    if (realty.asking?.price && realty.asking.year <= startYear) {
+      historical = { year: realty.asking.year, value: realty.asking.price };
+    }
+
+    if (realty.lastSale?.price && realty.lastSale.year <= startYear) {
+      historical = { year: realty.lastSale.year, value: realty.lastSale.price };
+    }
+
+    if (!historical) {
+      historical = {
+        year: startYear,
+        value: Math.round(((realty.currentApprox || 0) * 0.55) / 1000) * 1000,
+      };
+    }
+
+    return years.map((year) => {
+      const span = 2026 - historical.year || 1;
+      const progress = Math.max(0, Math.min(1, (year - historical.year) / span));
+      const approximate = Math.round(
+        (historical.value + ((realty.currentApprox || historical.value) - historical.value) * progress) / 1000,
+      ) * 1000;
+
+      return {
+        year,
+        approximate,
+        published: tax[year] || null,
+        source: year === 2026
+          ? '2026 preliminary'
+          : tax[year]
+            ? 'Published record'
+            : 'Not available',
+      };
+    });
   }
-  if(keys.length && r.currentApprox){
-    const scale=r.currentApprox/tax[latest];
-    return years.map(y=>({year:y,approx:y===2026?r.currentApprox:Math.round((taxBasis(Math.min(y,latest))*scale)/1000)*1000,published:tax[y]||null,pub:y===2026?'2026 preliminary':(tax[y]?'Published record':'Not available')}));
+
+  function renderShell(content) {
+    return `
+      <header class="top">
+        <div class="wrap">
+          <a class="brand" href="./">Grand Caribbean · Port A</a>
+          <small>Unofficial condo guide · sources checked ${escapeHtml(meta.researchedOn)}</small>
+        </div>
+      </header>
+      ${content}
+      <footer class="footer">
+        <div class="wrap">Unofficial guide. Verify availability, prices, STR status and property records with the linked source.</div>
+      </footer>
+    `;
   }
-  let historical=null;
-  if(r.asking && r.asking.year<=start && r.asking.price) historical={year:r.asking.year,value:r.asking.price};
-  if(r.lastSale && r.lastSale.price && r.lastSale.year<=start) historical={year:r.lastSale.year,value:r.lastSale.price};
-  if(!historical) historical={year:start,value:Math.round(((r.currentApprox||0)*0.55)/1000)*1000};
-  return years.map(y=>{
-    const span=2026-historical.year||1, t=Math.max(0,Math.min(1,(y-historical.year)/span));
-    const v=Math.round((historical.value+((r.currentApprox||historical.value)-historical.value)*t)/1000)*1000;
-    return {year:y,approx:v,published:tax[y]||null,pub:y===2026?'2026 preliminary':(tax[y]?'Published record':'Not available')};
-  });
-}
-function shell(content){return `<header class="top"><div class="wrap"><a class="brand" href="./">Grand Caribbean · Port A</a><small>Unofficial condo guide · sources checked ${esc(meta.researchedOn)}</small></div></header>${content}<footer class="footer"><div class="wrap">Unofficial guide. Verify availability, prices, STR status and property records with the linked source.</div></footer>`}
-function gallery(){return `<div class="gallery" aria-label="Shared views from Grand Caribbean"><img src="assets/images/hero.webp" alt="View from Grand Caribbean toward Mustang Island" loading="lazy"><img src="assets/images/marsh-view.webp" alt="Marsh and neighborhood view" loading="lazy"><img src="assets/images/neighborhood-view.webp" alt="Grand Caribbean exterior and nearby homes" loading="lazy"></div>`}
-function card(u){
-  const title=u.name?`${u.unit} · ${esc(u.name)}`:`Condo ${u.unit}`;
-  const occ=u.occupancy||u.placard?.maxOccupancy;
-  const summary=u.status==='verified'?`${u.bookings.length} checked booking link${u.bookings.length===1?'':'s'}`:u.status==='contact'?'On-site rental contact':'Property and sale history';
-  return `<article class="card" data-unit="${u.unit}" data-status="${u.status}" data-floor="${u.floor}" data-occ="${occ||0}"><span class="pill ${u.status}">${statusLabel[u.status]}</span><h2>${title}</h2><div class="facts"><span class="fact">${u.bedrooms} BR</span><span class="fact">${u.bathrooms} BA</span>${occ?`<span class="fact">Up to ${occ}</span>`:''}${u.str?`<span class="fact">STR ${esc(u.str)}</span>`:''}</div><p>${summary}</p><a class="open" href="${unitHref(u)}">View condo</a></article>`;
-}
-function landing(){
- document.title='Grand Caribbean Condo Guide | Port Aransas';
- const counts=Object.fromEntries(['verified','contact','no-current'].map(s=>[s,units.filter(u=>u.status===s).length]));
- root.innerHTML=shell(`<section class="hero"><div class="wrap hero-grid"><div class="hero-copy"><div class="eyebrow">Mustang Island · Port Aransas, Texas</div><h1>Grand Caribbean condo directory</h1><p>Search all ${units.length} condos. Compare rooms, guest capacity and current rental links; units without a live booking page include property history.</p><div class="stats"><div class="stat"><strong>${counts.verified}</strong><br>online rentals</div><div class="stat"><strong>${counts.contact}</strong><br>contact rentals</div><div class="stat"><strong>${counts['no-current']}</strong><br>no current booking link</div></div></div><img src="assets/images/hero.webp" alt="Grand Caribbean and Mustang Island view"></div></section><main class="section" id="units"><div class="wrap"><div class="notice"><strong>Booking links:</strong> shown only for exact-unit matches. On-site occupancy and listing capacity stay separate when they differ.</div><div class="filters"><input id="q" type="search" placeholder="Search 3008, Beach Haven, STR…" aria-label="Search condos"><select id="status"><option value="">All rental states</option><option value="verified">Book online</option><option value="contact">Contact to rent</option><option value="no-current">No current booking link</option></select><select id="floor"><option value="">All floors</option>${[1,2,3,4].map(n=>`<option value="${n}">Floor ${n}</option>`).join('')}</select><select id="occ"><option value="">Any capacity</option><option value="4">4+ guests</option><option value="6">6+ guests</option><option value="8">8+ guests</option></select></div><div id="resultCount" class="source-note" aria-live="polite"></div><div id="cards" class="grid">${units.map(card).join('')}</div>${gallery()}<div class="method"><strong>Research notes.</strong> ${esc(meta.methodology)}</div></div></main>`);
- const q=document.querySelector('#q'),status=document.querySelector('#status'),floor=document.querySelector('#floor'),occ=document.querySelector('#occ'),cards=document.querySelector('#cards'),rc=document.querySelector('#resultCount');
- function filt(){const term=q.value.trim().toLowerCase(), st=status.value, fl=floor.value, oc=+occ.value||0; const list=units.filter(u=>{const occupancy=u.occupancy||u.placard?.maxOccupancy||0; const blob=[u.unit,u.name,u.str,u.placard?.manager,u.placard?.phone,...(u.bookings||[]).map(b=>`${b.channel} ${b.details}`)].filter(Boolean).join(' ').toLowerCase();return (!term||blob.includes(term))&&(!st||u.status===st)&&(!fl||String(u.floor)===fl)&&(!oc||occupancy>=oc)}); cards.innerHTML=list.map(card).join('')||'<div class="empty">No matching condos.</div>';rc.textContent=`Showing ${list.length} of ${units.length} condos`;}
- [q,status,floor,occ].forEach(el=>el.addEventListener('input',filt));filt();
-}
-function bookingBlock(u){
- if(u.status==='contact')return `<div class="notice"><strong>No live booking page is linked.</strong> Use the on-site contact below and confirm availability directly.</div>`;
- if(!u.bookings.length)return `<div class="notice warn"><strong>No live booking page found.</strong> Checked ${esc(meta.researchedOn)}.</div>`;
- return `<div class="link-list">${u.bookings.map(b=>`<div class="booking"><strong>${esc(b.channel)}${b.secondary?' · secondary channel':''}</strong><p>${esc(b.details)}</p><a href="${esc(b.url)}" target="_blank" rel="noopener">Open ${esc(b.channel)}</a><div class="validation">${esc(b.validation)} · checked ${esc(b.checked)}</div></div>`).join('')}</div>`;
-}
-function placardBlock(u){if(!u.placard)return '';const p=u.placard;return `<h2>On-site rental sign</h2><div class="booking placard"><div class="badge-row">${p.maxOccupancy?`<span class="fact">Posted max ${p.maxOccupancy}</span>`:''}${p.str?`<span class="fact">STR / registration ${esc(p.str)}</span>`:''}</div><p>${p.manager?`Manager/contact: <strong>${esc(p.manager)}</strong>. `:''}${p.phone?`Phone: <a href="tel:${p.phone.replace(/[^0-9]/g,'')}">${esc(p.phone)}</a>. `:''}${p.note?esc(p.note):''}</p><div class="validation">From on-site photo · ${esc(p.checked||meta.researchedOn)}.</div></div>`}
-function realtyBlock(u){const r=u.realty;if(!r)return '';const rows=approxSeries(r);return `<h2>Sale, value & tax record</h2><div class="value-cards"><div class="value-card"><small>Estimated value</small><strong>${money(r.currentApprox)}</strong><small>${esc(r.currentBasis)}</small></div><div class="value-card"><small>Latest sale record</small><strong>${r.lastSale?String(r.lastSale.year):'Not surfaced'}</strong><small>${r.lastSale?esc(r.lastSale.label):'No exact sale record found'}</small></div><div class="value-card"><small>History from</small><strong>${r.tableStartYear}</strong><small>${esc(r.startLabel)}</small></div></div>${r.asking?`<p class="sale-line"><strong>${r.asking.year} listing:</strong> ${money(r.asking.price)} — ${esc(r.asking.label)}</p>`:''}<div class="source-links">${r.links.map(l=>`<a href="${esc(l.url)}" target="_blank" rel="noopener" title="${esc(l.note)}">${esc(l.label)}</a>`).join('')}<a href="${esc(r.officialTaxUrl)}" target="_blank" rel="noopener">Official Nueces CAD</a></div>${r.notes?.map(n=>`<p class="source-note">${esc(n)}</p>`).join('')||''}<h2>Year-by-year values</h2><div class="table-wrap"><table class="history"><thead><tr><th>Year</th><th>Estimated market value</th><th>Published assessment*</th><th>Source status</th></tr></thead><tbody>${rows.map(x=>`<tr><td>${x.year}</td><td class="model">${money(x.approx)}</td><td>${x.published?money(x.published):'—'}</td><td class="muted">${esc(x.pub)}</td></tr>`).join('')}</tbody></table></div><p class="source-note"><strong>*Value note:</strong> market-value figures are modeled estimates, not appraisals or sale prices. Published assessment values appear only when an exact-unit source was available; blank years are intentional. Verify county values with Nueces CAD.</p>`}
-function detail(u){
- document.title=`Unit ${u.unit}${u.name?` · ${u.name}`:''} | Grand Caribbean Condo Guide`;
- const d=document.querySelector('meta[name="description"]'); if(d)d.content=`Grand Caribbean Unit ${u.unit} in Port Aransas: ${u.bedrooms} bedrooms, ${u.bathrooms} baths, rental references, occupancy and property history.`;
- const ix=units.findIndex(x=>x.unit===u.unit), prev=units[ix-1], next=units[ix+1];
- const title=u.name?`Condo ${u.unit} · ${esc(u.name)}`:`Condo ${u.unit}`;
- const bookingOcc=u.occupancy?`${u.occupancy} guests`:'Not listed';
- root.innerHTML=shell(`<main class="detail"><div class="wrap"><a class="back" href="./#units">← All condos</a><div class="detail-head"><div><div class="eyebrow">Floor ${u.floor}</div><h1>${title}</h1><div class="badge-row"><span class="pill ${u.status}">${statusLabel[u.status]}</span>${u.str?`<span class="fact">STR / registration ${esc(u.str)}</span>`:''}</div></div><div class="summary-card"><dl><div><dt>Bedrooms</dt><dd>${u.bedrooms}</dd></div><div><dt>Bathrooms</dt><dd>${u.bathrooms}</dd></div><div><dt>Listing capacity</dt><dd>${bookingOcc}</dd></div><div><dt>Interior</dt><dd>${u.sqft?`${Number(u.sqft).toLocaleString()} sf`:'Not verified'}</dd></div></dl></div></div>${u.beds?.length?`<div class="panel"><strong>Sleeping details</strong><p>${u.beds.map(esc).join(' · ')}</p></div>`:''}${u.note?`<p class="notice">${esc(u.note)}</p>`:''}<h2>${u.status==='no-current'?'Rental status':'How to rent'}</h2>${bookingBlock(u)}${placardBlock(u)}${realtyBlock(u)}${gallery()}<nav class="unit-nav" aria-label="Adjacent condos"><span>${prev?`<a href="${unitHref(prev)}">← Unit ${prev.unit}</a>`:''}</span><a href="./#units">All condos</a><span>${next?`<a href="${unitHref(next)}">Unit ${next.unit} →</a>`:''}</span></nav><div class="method"><strong>Research notes.</strong> ${esc(meta.methodology)}</div></div></main>`);
-}
-const params=new URLSearchParams(location.search), id=document.body.dataset.unit||params.get('unit'); const u=id&&units.find(x=>x.unit===id); if(u)detail(u);else landing();
+
+  function renderSharedGallery() {
+    return `
+      <div class="gallery" aria-label="Shared views from Grand Caribbean">
+        <img src="assets/images/hero.webp" alt="View from Grand Caribbean toward Mustang Island" loading="lazy">
+        <img src="assets/images/marsh-view.webp" alt="Marsh and neighborhood view" loading="lazy">
+        <img src="assets/images/neighborhood-view.webp" alt="Grand Caribbean exterior and nearby homes" loading="lazy">
+      </div>
+    `;
+  }
+
+  function renderUnitCard(unit) {
+    const title = unit.name
+      ? `${unit.unit} · ${escapeHtml(unit.name)}`
+      : `Condo ${unit.unit}`;
+    const occupancy = unit.occupancy || unit.placard?.maxOccupancy;
+    const summary = unit.status === 'verified'
+      ? `${unit.bookings.length} checked booking link${unit.bookings.length === 1 ? '' : 's'}`
+      : unit.status === 'contact'
+        ? 'No current rental booking'
+        : 'Property and sale history';
+
+    return `
+      <article class="card" data-unit="${unit.unit}" data-status="${unit.status}" data-floor="${unit.floor}" data-occ="${occupancy || 0}">
+        <span class="pill ${unit.status}">${STATUS_LABELS[unit.status]}</span>
+        <h2>${title}</h2>
+        <div class="facts">
+          <span class="fact">${unit.bedrooms} BR</span>
+          <span class="fact">${unit.bathrooms} BA</span>
+          ${occupancy ? `<span class="fact">Up to ${occupancy}</span>` : ''}
+          ${unit.str ? `<span class="fact">STR ${escapeHtml(unit.str)}</span>` : ''}
+        </div>
+        <p>${summary}</p>
+        <a class="open" href="${unitHref(unit)}">View condo</a>
+      </article>
+    `;
+  }
+
+  function renderLanding() {
+    document.title = 'Grand Caribbean Condo Guide | Port Aransas';
+
+    const counts = Object.fromEntries(
+      ['verified', 'contact', 'no-current'].map((status) => [
+        status,
+        units.filter((unit) => unit.status === status).length,
+      ]),
+    );
+
+    root.innerHTML = renderShell(`
+      <section class="hero">
+        <div class="wrap hero-grid">
+          <div class="hero-copy">
+            <div class="eyebrow">Mustang Island · Port Aransas, Texas</div>
+            <h1>Grand Caribbean condo directory</h1>
+            <p>Search all ${units.length} condos. Compare rooms, guest capacity and current rental links; units without a live booking page include property history.</p>
+            <div class="stats">
+              <div class="stat"><strong>${counts.verified}</strong><br>online rentals</div>
+              <div class="stat"><strong>${counts.contact}</strong><br>not available to rent</div>
+              <div class="stat"><strong>${counts['no-current']}</strong><br>no current booking link</div>
+            </div>
+          </div>
+          <img src="assets/images/hero.webp" alt="Grand Caribbean and Mustang Island view">
+        </div>
+      </section>
+      <main class="section" id="units">
+        <div class="wrap">
+          <div class="notice"><strong>Booking links:</strong> shown only for exact-unit matches. On-site occupancy and listing capacity stay separate when they differ.</div>
+          <div class="filters">
+            <input id="q" type="search" placeholder="Search 3008, Beach Haven, STR…" aria-label="Search condos">
+            <select id="status">
+              <option value="">All rental states</option>
+              <option value="verified">Book online</option>
+              <option value="contact">Not available to rent</option>
+              <option value="no-current">No current booking link</option>
+            </select>
+            <select id="floor">
+              <option value="">All floors</option>
+              ${[1, 2, 3, 4].map((floor) => `<option value="${floor}">Floor ${floor}</option>`).join('')}
+            </select>
+            <select id="occ">
+              <option value="">Any capacity</option>
+              <option value="4">4+ guests</option>
+              <option value="6">6+ guests</option>
+              <option value="8">8+ guests</option>
+            </select>
+          </div>
+          <div id="resultCount" class="source-note" aria-live="polite"></div>
+          <div id="cards" class="grid">${units.map(renderUnitCard).join('')}</div>
+          ${renderSharedGallery()}
+          <div class="method"><strong>Research notes.</strong> ${escapeHtml(meta.methodology)}</div>
+        </div>
+      </main>
+    `);
+
+    const queryInput = document.querySelector('#q');
+    const statusSelect = document.querySelector('#status');
+    const floorSelect = document.querySelector('#floor');
+    const occupancySelect = document.querySelector('#occ');
+    const cards = document.querySelector('#cards');
+    const resultCount = document.querySelector('#resultCount');
+
+    const applyFilters = () => {
+      const query = queryInput.value.trim().toLowerCase();
+      const status = statusSelect.value;
+      const floor = floorSelect.value;
+      const minimumOccupancy = Number(occupancySelect.value) || 0;
+
+      const filtered = units.filter((unit) => {
+        const occupancy = unit.occupancy || unit.placard?.maxOccupancy || 0;
+        const searchable = [
+          unit.unit,
+          unit.name,
+          unit.str,
+          unit.placard?.manager,
+          unit.placard?.phone,
+          ...(unit.bookings || []).map((booking) => `${booking.channel} ${booking.details}`),
+        ]
+          .filter(Boolean)
+          .join(' ')
+          .toLowerCase();
+
+        return (!query || searchable.includes(query))
+          && (!status || unit.status === status)
+          && (!floor || String(unit.floor) === floor)
+          && (!minimumOccupancy || occupancy >= minimumOccupancy);
+      });
+
+      cards.innerHTML = filtered.length
+        ? filtered.map(renderUnitCard).join('')
+        : '<div class="empty">No matching condos.</div>';
+      resultCount.textContent = `Showing ${filtered.length} of ${units.length} condos`;
+    };
+
+    [queryInput, statusSelect, floorSelect, occupancySelect].forEach((element) => {
+      element.addEventListener('input', applyFilters);
+    });
+
+    applyFilters();
+  }
+
+  function renderBookingSection(unit) {
+    if (unit.status === 'contact') {
+      return '<div class="notice"><strong>Not available to rent.</strong></div>';
+    }
+
+    if (!unit.bookings.length) {
+      return `<div class="notice warn"><strong>No live booking page found.</strong> Checked ${escapeHtml(meta.researchedOn)}.</div>`;
+    }
+
+    return `
+      <div class="link-list">
+        ${unit.bookings.map((booking) => `
+          <div class="booking">
+            <strong>${escapeHtml(booking.channel)}${booking.secondary ? ' · secondary channel' : ''}</strong>
+            <p>${escapeHtml(booking.details)}</p>
+            <a href="${escapeHtml(booking.url)}" target="_blank" rel="noopener">Open ${escapeHtml(booking.channel)}</a>
+            <div class="validation">${escapeHtml(booking.validation)} · checked ${escapeHtml(booking.checked)}</div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  function renderPlacardSection(unit) {
+    if (!unit.placard) {
+      return '';
+    }
+
+    const placard = unit.placard;
+    const phoneHref = placard.phone?.replace(/[^0-9]/g, '');
+
+    return `
+      <h2>On-site rental sign</h2>
+      <div class="booking placard">
+        <div class="badge-row">
+          ${placard.maxOccupancy ? `<span class="fact">Posted max ${placard.maxOccupancy}</span>` : ''}
+          ${placard.str ? `<span class="fact">STR / registration ${escapeHtml(placard.str)}</span>` : ''}
+        </div>
+        <p>
+          ${placard.manager ? `Manager/contact: <strong>${escapeHtml(placard.manager)}</strong>. ` : ''}
+          ${placard.phone ? `Phone: <a href="tel:${phoneHref}">${escapeHtml(placard.phone)}</a>. ` : ''}
+          ${placard.note ? escapeHtml(placard.note) : ''}
+        </p>
+        <div class="validation">From on-site photo · ${escapeHtml(placard.checked || meta.researchedOn)}.</div>
+      </div>
+    `;
+  }
+
+  function renderPublicReferences(unit) {
+    if (!unit.publicRefs?.length) {
+      return '';
+    }
+
+    return `
+      <section class="public-crosschecks">
+        <h2>Property cross-checks</h2>
+        <div class="link-list">
+          ${unit.publicRefs.map((reference) => `
+            <div class="booking">
+              <strong>${escapeHtml(reference.label)}</strong>
+              <p>${escapeHtml(reference.note || 'Exact-unit public property reference.')}</p>
+              <a href="${escapeHtml(reference.url)}" target="_blank" rel="noopener">Open source</a>
+              <div class="validation">Public source · checked ${escapeHtml(meta.researchedOn)}</div>
+            </div>
+          `).join('')}
+        </div>
+        <p class="source-note">Property/APN identifiers are kept separate from STR permit numbers unless a rental source explicitly links them.</p>
+      </section>
+    `;
+  }
+
+  function renderRealtySection(unit) {
+    const realty = unit.realty;
+
+    if (!realty) {
+      return '';
+    }
+
+    const rows = buildValueHistory(realty);
+    const officialTaxUrl = realty.officialTaxUrl || meta.officialTaxUrl;
+
+    return `
+      <h2>Sale, value & tax record</h2>
+      <div class="value-cards">
+        <div class="value-card">
+          <small>Estimated value</small>
+          <strong>${formatMoney(realty.currentApprox)}</strong>
+          <small>${escapeHtml(realty.currentBasis)}</small>
+        </div>
+        <div class="value-card">
+          <small>Latest sale record</small>
+          <strong>${realty.lastSale ? String(realty.lastSale.year) : 'Not surfaced'}</strong>
+          <small>${realty.lastSale ? escapeHtml(realty.lastSale.label) : 'No exact sale record found'}</small>
+        </div>
+        <div class="value-card">
+          <small>History from</small>
+          <strong>${realty.tableStartYear}</strong>
+          <small>${escapeHtml(realty.startLabel)}</small>
+        </div>
+      </div>
+      ${realty.asking ? `<p class="sale-line"><strong>${realty.asking.year} listing:</strong> ${formatMoney(realty.asking.price)} — ${escapeHtml(realty.asking.label)}</p>` : ''}
+      <div class="source-links">
+        ${realty.links.map((link) => `<a href="${escapeHtml(link.url)}" target="_blank" rel="noopener" title="${escapeHtml(link.note)}">${escapeHtml(link.label)}</a>`).join('')}
+        <a href="${escapeHtml(officialTaxUrl)}" target="_blank" rel="noopener">Official Nueces CAD</a>
+      </div>
+      ${(realty.notes || []).map((note) => `<p class="source-note">${escapeHtml(note)}</p>`).join('')}
+      <h2>Year-by-year values</h2>
+      <div class="table-wrap">
+        <table class="history">
+          <thead>
+            <tr>
+              <th>Year</th>
+              <th>Estimated market value</th>
+              <th>Published assessment*</th>
+              <th>Source status</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map((row) => `
+              <tr>
+                <td>${row.year}</td>
+                <td class="model">${formatMoney(row.approximate)}</td>
+                <td>${row.published ? formatMoney(row.published) : '—'}</td>
+                <td class="muted">${escapeHtml(row.source)}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+      <p class="source-note"><strong>*Value note:</strong> market-value figures are modeled estimates, not appraisals or sale prices. Published assessment values appear only when an exact-unit source was available; blank years are intentional. Verify county values with Nueces CAD.</p>
+    `;
+  }
+
+  function renderDetail(unit) {
+    document.title = `Unit ${unit.unit}${unit.name ? ` · ${unit.name}` : ''} | Grand Caribbean Condo Guide`;
+
+    const description = document.querySelector('meta[name="description"]');
+    if (description) {
+      description.content = `Grand Caribbean Unit ${unit.unit} in Port Aransas: ${unit.bedrooms} bedrooms, ${unit.bathrooms} baths, rental references, occupancy and property history.`;
+    }
+
+    const index = units.findIndex((candidate) => candidate.unit === unit.unit);
+    const previous = units[index - 1];
+    const next = units[index + 1];
+    const title = unit.name
+      ? `Condo ${unit.unit} · ${escapeHtml(unit.name)}`
+      : `Condo ${unit.unit}`;
+    const listingCapacity = unit.occupancy ? `${unit.occupancy} guests` : 'Not listed';
+
+    root.innerHTML = renderShell(`
+      <main class="detail">
+        <div class="wrap">
+          <a class="back" href="./#units">← All condos</a>
+          <div class="detail-head">
+            <div>
+              <div class="eyebrow">Floor ${unit.floor}</div>
+              <h1>${title}</h1>
+              <div class="badge-row">
+                <span class="pill ${unit.status}">${STATUS_LABELS[unit.status]}</span>
+                ${unit.str ? `<span class="fact">STR / registration ${escapeHtml(unit.str)}</span>` : ''}
+              </div>
+            </div>
+            <div class="summary-card">
+              <dl>
+                <div><dt>Bedrooms</dt><dd>${unit.bedrooms}</dd></div>
+                <div><dt>Bathrooms</dt><dd>${unit.bathrooms}</dd></div>
+                <div><dt>Listing capacity</dt><dd>${listingCapacity}</dd></div>
+                <div><dt>Interior</dt><dd>${unit.sqft ? `${Number(unit.sqft).toLocaleString()} sf` : 'Not verified'}</dd></div>
+              </dl>
+            </div>
+          </div>
+          ${unit.beds?.length ? `<div class="panel"><strong>Sleeping details</strong><p>${unit.beds.map(escapeHtml).join(' · ')}</p></div>` : ''}
+          ${unit.note ? `<p class="notice">${escapeHtml(unit.note)}</p>` : ''}
+          <h2>${unit.status === 'verified' ? 'How to rent' : 'Rental status'}</h2>
+          ${renderBookingSection(unit)}
+          ${renderPublicReferences(unit)}
+          ${renderPlacardSection(unit)}
+          ${renderRealtySection(unit)}
+          ${renderSharedGallery()}
+          <nav class="unit-nav" aria-label="Adjacent condos">
+            <span>${previous ? `<a href="${unitHref(previous)}">← Unit ${previous.unit}</a>` : ''}</span>
+            <a href="./#units">All condos</a>
+            <span>${next ? `<a href="${unitHref(next)}">Unit ${next.unit} →</a>` : ''}</span>
+          </nav>
+          <div class="method"><strong>Research notes.</strong> ${escapeHtml(meta.methodology)}</div>
+        </div>
+      </main>
+    `);
+  }
+
+  const requestedUnit = document.body.dataset.unit || new URLSearchParams(window.location.search).get('unit');
+  const unit = requestedUnit && units.find((candidate) => candidate.unit === requestedUnit);
+
+  if (unit) {
+    renderDetail(unit);
+  } else {
+    renderLanding();
+  }
 })();

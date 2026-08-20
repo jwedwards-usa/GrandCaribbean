@@ -1,11 +1,9 @@
 # Grand Caribbean Condo Guide
 
-Static, no-backend GitHub Pages site for organizing Grand Caribbean condominium unit information, rental contacts, and on-site observations.
+Static GitHub Pages guide for Grand Caribbean at Dune Crest in Port Aransas, Texas.
 
-## Data source
+The site uses plain HTML, CSS and JavaScript with no backend or build step. `index.html` and the per-condo HTML entry points share one bootstrap and rendering pipeline under `assets/`. Unit research data and gallery data are split into small static payloads to keep the source manageable and load only the gallery set needed for a condo detail page.
 
-Unit details are based on on-site photos captured in August 2026 plus explicitly supplied rental links. Posted STR/registration details can change, so the site presents them as a reference and asks visitors to verify current booking information.
+Unit details are based on on-site photos captured in August 2026 and linked public rental or property sources. STR, occupancy, management and property information can change; visitors should verify current information with the linked source.
 
-## Hosting
-
-The site uses plain HTML, CSS, and JavaScript and is designed to run directly on GitHub Pages. Images are resized and WebP-compressed for low-bandwidth use.
+Images are resized or requested at reduced dimensions where supported to keep bandwidth use low.
