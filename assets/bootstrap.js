@@ -38,6 +38,7 @@
     await loadScript('assets/portoro-audit.js');
     await loadScript('assets/gc3002-compare.js');
     await loadScript('assets/gc4007-deep.js');
+    await loadScript('assets/sandkey-sweep.js');
 
     window.GC_UNITS?.sort((left, right) => left.unit.localeCompare(right.unit));
     const hasUnit = Boolean(
