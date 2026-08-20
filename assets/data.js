@@ -70,7 +70,14 @@ window.GC_DATA = {
       ],
       "observed": true,
       "notes": [],
-      "amenities": []
+      "amenities": [],
+      "references": [
+        {
+          "label": "Silver Sands rental — GC1006-Port A Condo",
+          "url": "https://silversandsvacationrentals.com/property/b3fdd981-e48f-4320-b53f-c4c55b2d070e",
+          "note": "Public rental listing identifies GC1006 as a 2-bedroom, 2-bath condo sleeping 6, matching the photographed maximum occupancy. The public page does not display STR 200105618."
+        }
+      ]
     },
     {
       "id": "1007",
@@ -82,8 +89,17 @@ window.GC_DATA = {
         "sand-key"
       ],
       "observed": true,
-      "notes": [],
-      "amenities": []
+      "notes": [
+        "The photographed onsite placard names Sand Key Realty, while the current public rental page is operated by Port A Escapes. This may reflect changed or overlapping management; verify the current booking party before paying."
+      ],
+      "amenities": [],
+      "references": [
+        {
+          "label": "Port A Escapes rental — Grand Caribbean GC1007",
+          "url": "https://www.portaescapes.com/rentals/grand-caribbean-gc1007",
+          "note": "Direct public rental match: Unit 1007, 2 bedrooms, 2 baths, 6 guests, and STR#200105620. This independently confirms the photographed unit/STR/occupancy mapping."
+        }
+      ]
     },
     {
       "id": "1008",
@@ -95,8 +111,17 @@ window.GC_DATA = {
         "port-aransas-escapes"
       ],
       "observed": true,
-      "notes": [],
-      "amenities": []
+      "notes": [
+        "The photographed placard says Port Aransas Escapes at 361-749-3591. The current public rental page is on Port A Escapes and confirms the same unit, occupancy and STR number, so verify which contact currently handles the booking."
+      ],
+      "amenities": [],
+      "references": [
+        {
+          "label": "Port A Escapes rental — Grand Caribbean GC1008",
+          "url": "https://www.portaescapes.com/rentals/grand-caribbean-gc1008",
+          "note": "Direct public rental match: Unit 1008 at 5495 State Highway 361 #1008, 2 bedrooms, 2 baths, 6 guests, and STR#200105622."
+        }
+      ]
     },
     {
       "id": "1009",
@@ -108,8 +133,23 @@ window.GC_DATA = {
         "port-aransas-escapes"
       ],
       "observed": true,
-      "notes": [],
-      "amenities": []
+      "notes": [
+        "The photographed placard states maximum occupancy 8. The current Port A Escapes listing advertises sleeping 7, so the site preserves the placard value and flags the current public-listing difference rather than silently replacing it.",
+        "The photographed placard says Port Aransas Escapes at 361-749-3591; the current public rental page is operated by Port A Escapes. Verify the current booking party before paying."
+      ],
+      "amenities": [],
+      "references": [
+        {
+          "label": "Port A Escapes rental — A Change In Latitude GC1009",
+          "url": "https://www.portaescapes.com/rentals/a-change-in-latitude-gc1009",
+          "note": "Current public rental page confirms Unit 1009 at 5495 State Hwy 361 #1009 with 3 bedrooms and 3 baths; it currently advertises 7 guests."
+        },
+        {
+          "label": "Vrbo cross-check — GC1009",
+          "url": "https://www.vrbo.com/2438010",
+          "note": "Public Vrbo listing for A Change In Latitude GC1009 displays STR#200105624, independently matching the photographed STR number."
+        }
+      ]
     },
     {
       "id": "1010",
@@ -121,10 +161,23 @@ window.GC_DATA = {
         "porta-escapes"
       ],
       "notes": [
-        "STR 200105626, maximum occupancy 6, and phone 361-749-2300 are visible through the window screen. The unit-number text is obscured in this photo; assignment to Unit 1010 follows the photographed first-floor sequence and contiguous STR numbering."
+        "STR 200105626, maximum occupancy 6, and phone 361-749-2300 are visible through the window screen. The unit-number text is obscured in this photo.",
+        "The current Port A Escapes public listing independently confirms Grand Caribbean Unit 1010 at 5495 State Hwy 361 #1010 as a 3-bedroom, 3-bath condo for 6 guests. A public Homes.com property record for the same unit shows APN 200105626. Together these strongly corroborate the 1010 ↔ 200105626 mapping, although the rental page itself does not currently print that STR number."
       ],
       "amenities": [],
-      "observed": true
+      "observed": true,
+      "references": [
+        {
+          "label": "Port A Escapes rental — Grand Caribbean GC1010",
+          "url": "https://www.portaescapes.com/rentals/grand-caribbean-gc1010",
+          "note": "Current public rental page confirms Unit 1010, address 5495 State Hwy 361 #1010, 3 bedrooms, 3 baths and 6 guests. It does not currently display STR 200105626."
+        },
+        {
+          "label": "Homes.com property record — Unit 1010",
+          "url": "https://www.homes.com/property/5495-state-highway-361-port-aransas-tx-unit-1010/z6t6mrlhl7rmy/",
+          "note": "Public property record identifies the same Unit 1010 and lists APN 200105626. This is a property-record cross-check, not a second rental-site STR claim."
+        }
+      ]
     },
     {
       "id": "2001",
