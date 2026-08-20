@@ -44,9 +44,11 @@
     }
 
     await loadScript('assets/render.js');
+    await loadScript('assets/property-media.js');
 
     if (hasUnit) {
       await loadScript('assets/carousel.js');
+      await loadScript('assets/gallery-enhancements.js');
     }
   };
 
