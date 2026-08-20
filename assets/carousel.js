@@ -1,4 +1,7 @@
 (() => {
+  const MAX_DOTS = 10;
+  const SWIPE_THRESHOLD = 45;
+
   const escapeHtml = (value) => String(value ?? '').replace(
     /[&<>"']/g,
     (character) => ({
@@ -105,11 +108,34 @@
   function renderSource(record) {
     return `
       <p class="carousel-source source-note">
-        <strong>Source:</strong>
+        <strong>Photos:</strong>
         <a href="${escapeHtml(record.sourceUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(record.sourceLabel)}</a>
         · <strong>Photo date:</strong> ${escapeHtml(record.imageDate || 'Not published')}
         · checked ${escapeHtml(record.checked || '2026-08-19')}.
       </p>
+      <p class="carousel-source-actions">
+        <a class="action" href="${escapeHtml(record.sourceUrl)}" target="_blank" rel="noopener noreferrer">View all photos on listing ↗</a>
+      </p>
+    `;
+  }
+
+  function renderDots(photoCount) {
+    if (photoCount <= 1 || photoCount > MAX_DOTS) {
+      return '';
+    }
+
+    return `
+      <div class="carousel-dots" aria-label="Choose rental photo">
+        ${Array.from({ length: photoCount }, (_, index) => `
+          <button
+            type="button"
+            class="carousel-dot"
+            data-carousel-dot="${index}"
+            aria-label="Show photo ${index + 1}"
+            aria-current="${index === 0 ? 'true' : 'false'}"
+          ></button>
+        `).join('')}
+      </div>
     `;
   }
 
@@ -169,19 +195,7 @@
             ${escapeHtml(firstPhoto.caption || `Rental listing photo 1 of ${photos.length}.`)}
           </figcaption>
         </figure>
-        ${hasMultiple ? `
-          <div class="carousel-dots" aria-label="Choose rental photo">
-            ${photos.map((_, index) => `
-              <button
-                type="button"
-                class="carousel-dot"
-                data-carousel-dot="${index}"
-                aria-label="Show photo ${index + 1}"
-                aria-current="${index === 0 ? 'true' : 'false'}"
-              ></button>
-            `).join('')}
-          </div>
-        ` : ''}
+        ${renderDots(photos.length)}
         ${renderSource(record)}
       </section>
     `;
@@ -196,6 +210,7 @@
     }
 
     let index = 0;
+    let touchStartX = null;
     const image = element.querySelector('[data-carousel-image]');
     const count = element.querySelector('[data-carousel-count]');
     const caption = element.querySelector('[data-carousel-caption]');
@@ -247,6 +262,26 @@
         show(index + 1);
       }
     });
+
+    element.addEventListener('touchstart', (event) => {
+      touchStartX = event.touches[0]?.clientX ?? null;
+    }, { passive: true });
+
+    element.addEventListener('touchend', (event) => {
+      if (touchStartX == null) {
+        return;
+      }
+
+      const touchEndX = event.changedTouches[0]?.clientX ?? touchStartX;
+      const delta = touchEndX - touchStartX;
+      touchStartX = null;
+
+      if (Math.abs(delta) < SWIPE_THRESHOLD) {
+        return;
+      }
+
+      show(index + (delta < 0 ? 1 : -1));
+    }, { passive: true });
   }
 
   function bind() {
@@ -266,7 +301,7 @@
     }
 
     const html = render(unit);
-    const anchor = document.querySelector('.detail .gallery') || document.querySelector('.unit-nav');
+    const anchor = document.querySelector('.unit-nav');
 
     if (!html || !anchor) {
       return;

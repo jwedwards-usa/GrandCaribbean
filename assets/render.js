@@ -3,6 +3,23 @@
   const meta = window.GC_META;
   const units = window.GC_UNITS || [];
 
+  const DUNE_CREST_URL = 'https://dunecrest.com/';
+  const PROPERTY_PHOTO_SOURCE = 'https://www.portaescapes.com/rentals/grand-caribbean-gc1007';
+  const PROPERTY_PHOTOS = [
+    {
+      src: 'https://track-pm.s3.amazonaws.com/paescapes/image/bd2dcb12-3895-4503-a970-c5ab90654e4a',
+      alt: 'Grand Caribbean building and boardwalk through the coastal dunes',
+    },
+    {
+      src: 'https://track-pm.s3.amazonaws.com/paescapes/image/eea916bc-c3fb-4180-ae50-b4a4000d46f7',
+      alt: 'Grand Caribbean yellow building and curved swimming pool',
+    },
+    {
+      src: 'https://track-pm.s3.amazonaws.com/paescapes/image/243e8cf9-acdd-4d0b-8041-bfa0ad688dac',
+      alt: 'Grand Caribbean pool deck overlooking the dunes and beach boardwalk',
+    },
+  ];
+
   const STATUS_LABELS = {
     verified: 'Book online',
     contact: 'Not available to rent',
@@ -33,6 +50,12 @@
   };
 
   const unitHref = (unit) => `condos/${encodeURIComponent(unit.unit)}.html`;
+
+  const propertyPhotoUrl = (src, width) => (
+    `https://images.weserv.nl/?url=${encodeURIComponent(src)}&w=${width}&q=72&output=webp`
+  );
+
+  const hasExactUnitGallery = (unit) => Boolean(window.GC_GALLERIES?.[unit.unit]);
 
   function buildValueHistory(realty) {
     const startYear = realty.tableStartYear || 2026;
@@ -130,23 +153,55 @@
       <header class="top">
         <div class="wrap">
           <a class="brand" href="./">Grand Caribbean · Port A</a>
-          <small>Unofficial condo guide · sources checked ${escapeHtml(meta.researchedOn)}</small>
+          <small>
+            Unofficial condo guide · sources checked ${escapeHtml(meta.researchedOn)}
+            · <a href="${DUNE_CREST_URL}" target="_blank" rel="noopener">Dune Crest site</a>
+          </small>
         </div>
       </header>
       ${content}
       <footer class="footer">
-        <div class="wrap">Unofficial guide. Verify availability, prices, STR status and property records with the linked source.</div>
+        <div class="wrap">
+          Unofficial guide. Verify availability, prices, STR status and property records with the linked source.
+          · <a href="${DUNE_CREST_URL}" target="_blank" rel="noopener">Grand Caribbean at Dune Crest</a>
+        </div>
       </footer>
     `;
   }
 
-  function renderSharedGallery() {
+  function renderPropertyGallery() {
     return `
-      <div class="gallery" aria-label="Shared views from Grand Caribbean">
-        <img src="assets/images/hero.webp" alt="View from Grand Caribbean toward Mustang Island" loading="lazy">
-        <img src="assets/images/marsh-view.webp" alt="Marsh and neighborhood view" loading="lazy">
-        <img src="assets/images/neighborhood-view.webp" alt="Grand Caribbean exterior and nearby homes" loading="lazy">
-      </div>
+      <section class="property-gallery" aria-labelledby="property-gallery-title">
+        <h2 id="property-gallery-title">Grand Caribbean property photos</h2>
+        <div class="gallery" aria-label="Grand Caribbean exterior, pool and boardwalk photos">
+          ${PROPERTY_PHOTOS.map((photo, index) => {
+            const small = propertyPhotoUrl(photo.src, 720);
+            const large = propertyPhotoUrl(photo.src, 1200);
+            const sizes = index === 0
+              ? '(max-width: 800px) calc(100vw - 32px), 560px'
+              : '(max-width: 800px) calc(50vw - 20px), 280px';
+
+            return `
+              <img
+                src="${escapeHtml(small)}"
+                srcset="${escapeHtml(small)} 720w, ${escapeHtml(large)} 1200w"
+                sizes="${sizes}"
+                alt="${escapeHtml(photo.alt)}"
+                loading="lazy"
+                decoding="async"
+                width="1200"
+                height="800"
+              >
+            `;
+          }).join('')}
+        </div>
+        <p class="source-note property-photo-source">
+          <strong>Property photos:</strong>
+          <a href="${PROPERTY_PHOTO_SOURCE}" target="_blank" rel="noopener">current Grand Caribbean rental listing</a>
+          · <a href="${DUNE_CREST_URL}" target="_blank" rel="noopener">Grand Caribbean at Dune Crest site</a>
+          · checked ${escapeHtml(meta.researchedOn)}.
+        </p>
+      </section>
     `;
   }
 
@@ -186,6 +241,9 @@
         units.filter((unit) => unit.status === status).length,
       ]),
     );
+    const heroPhoto = PROPERTY_PHOTOS[1];
+    const heroSmall = propertyPhotoUrl(heroPhoto.src, 720);
+    const heroLarge = propertyPhotoUrl(heroPhoto.src, 1200);
 
     root.innerHTML = renderShell(`
       <section class="hero">
@@ -194,13 +252,27 @@
             <div class="eyebrow">Mustang Island · Port Aransas, Texas</div>
             <h1>Grand Caribbean condo directory</h1>
             <p>Search all ${units.length} condos. Compare rooms, guest capacity and current rental links; units without a live booking page include property history.</p>
+            <p class="property-site-link">
+              <a class="action" href="${DUNE_CREST_URL}" target="_blank" rel="noopener">Grand Caribbean at Dune Crest ↗</a>
+            </p>
             <div class="stats">
               <div class="stat"><strong>${counts.verified}</strong><br>online rentals</div>
               <div class="stat"><strong>${counts.contact}</strong><br>not available to rent</div>
               <div class="stat"><strong>${counts['no-current']}</strong><br>no current booking link</div>
             </div>
           </div>
-          <img src="assets/images/hero.webp" alt="Grand Caribbean and Mustang Island view">
+          <a class="hero-media" href="${PROPERTY_PHOTO_SOURCE}" target="_blank" rel="noopener" aria-label="Open the source listing for this Grand Caribbean property photo">
+            <img
+              src="${escapeHtml(heroSmall)}"
+              srcset="${escapeHtml(heroSmall)} 720w, ${escapeHtml(heroLarge)} 1200w"
+              sizes="(max-width: 800px) calc(100vw - 32px), 42vw"
+              alt="${escapeHtml(heroPhoto.alt)}"
+              decoding="async"
+              fetchpriority="high"
+              width="1200"
+              height="800"
+            >
+          </a>
         </div>
       </section>
       <main class="section" id="units">
@@ -227,7 +299,7 @@
           </div>
           <div id="resultCount" class="source-note" aria-live="polite"></div>
           <div id="cards" class="grid">${units.map(renderUnitCard).join('')}</div>
-          ${renderSharedGallery()}
+          ${renderPropertyGallery()}
           <div class="method"><strong>Research notes.</strong> ${escapeHtml(meta.methodology)}</div>
         </div>
       </main>
@@ -457,7 +529,7 @@
           ${renderPublicReferences(unit)}
           ${renderPlacardSection(unit)}
           ${renderRealtySection(unit)}
-          ${renderSharedGallery()}
+          ${hasExactUnitGallery(unit) ? '' : renderPropertyGallery()}
           <nav class="unit-nav" aria-label="Adjacent condos">
             <span>${previous ? `<a href="${unitHref(previous)}">← Unit ${previous.unit}</a>` : ''}</span>
             <a href="./#units">All condos</a>
