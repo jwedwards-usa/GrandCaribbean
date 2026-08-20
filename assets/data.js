@@ -115,10 +115,16 @@ window.GC_DATA = {
       "id": "1010",
       "floor": 1,
       "suite": 10,
-      "contacts": [],
-      "notes": [],
+      "maxOccupancy": 6,
+      "str": "200105626",
+      "contacts": [
+        "porta-escapes"
+      ],
+      "notes": [
+        "STR 200105626, maximum occupancy 6, and phone 361-749-2300 are visible through the window screen. The unit-number text is obscured in this photo; assignment to Unit 1010 follows the photographed first-floor sequence and contiguous STR numbering."
+      ],
       "amenities": [],
-      "observed": false
+      "observed": true
     },
     {
       "id": "2001",
