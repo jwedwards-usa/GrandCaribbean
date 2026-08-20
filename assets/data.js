@@ -89,19 +89,27 @@ window.GC_DATA = {
       "id": "1008",
       "floor": 1,
       "suite": 8,
-      "contacts": [],
+      "maxOccupancy": 6,
+      "str": "200105622",
+      "contacts": [
+        "port-aransas-escapes"
+      ],
+      "observed": true,
       "notes": [],
-      "amenities": [],
-      "observed": false
+      "amenities": []
     },
     {
       "id": "1009",
       "floor": 1,
       "suite": 9,
-      "contacts": [],
+      "maxOccupancy": 8,
+      "str": "200105624",
+      "contacts": [
+        "port-aransas-escapes"
+      ],
+      "observed": true,
       "notes": [],
-      "amenities": [],
-      "observed": false
+      "amenities": []
     },
     {
       "id": "1010",
