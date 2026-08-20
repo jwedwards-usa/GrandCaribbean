@@ -1,13 +1,16 @@
 (() => {
   const UNIT_PATTERN = /^\d{4}$/;
   const CONDO_PATH_PATTERN = /\/condos\/(\d{4})\.html$/i;
+  const DATA_ROOT = 'assets/data';
+  const UNIT_SHARD_COUNT = 8;
+
   const params = new URLSearchParams(window.location.search);
   const pathMatch = window.location.pathname.match(CONDO_PATH_PATTERN);
   const candidateUnit = document.body.dataset.unit || params.get('unit') || pathMatch?.[1] || '';
-  const unit = UNIT_PATTERN.test(candidateUnit) ? candidateUnit : null;
+  const requestedUnit = UNIT_PATTERN.test(candidateUnit) ? candidateUnit : null;
 
-  if (unit) {
-    document.body.dataset.unit = unit;
+  if (requestedUnit) {
+    document.body.dataset.unit = requestedUnit;
   }
 
   if (pathMatch && !document.head.querySelector('base')) {
@@ -31,28 +34,27 @@
 
   const start = async () => {
     await Promise.all(
-      Array.from({ length: 8 }, (_, index) => loadScript(`assets/research-${index + 1}.js`)),
+      Array.from(
+        { length: UNIT_SHARD_COUNT },
+        (_, index) => loadScript(`${DATA_ROOT}/units-${index + 1}.js`),
+      ),
     );
-
-    await loadScript('assets/booking-audit.js');
-    await loadScript('assets/portoro-audit.js');
-    await loadScript('assets/gc3002-compare.js');
-    await loadScript('assets/gc4007-deep.js');
-    await loadScript('assets/sandkey-sweep.js');
+    await loadScript(`${DATA_ROOT}/overrides.js`);
 
     window.GC_UNITS?.sort((left, right) => left.unit.localeCompare(right.unit));
-    const hasUnit = Boolean(
-      unit && window.GC_UNITS?.some((candidate) => candidate.unit === unit),
+    const hasRequestedUnit = Boolean(
+      requestedUnit
+      && window.GC_UNITS?.some((candidate) => candidate.unit === requestedUnit),
     );
 
-    if (hasUnit) {
-      await loadScript(`assets/galleries-${unit[0]}.js`);
+    if (hasRequestedUnit) {
+      await loadScript(`${DATA_ROOT}/galleries-${requestedUnit[0]}.js`);
     }
 
     await loadScript('assets/render.js');
     await loadScript('assets/price-compare.js');
 
-    if (hasUnit) {
+    if (hasRequestedUnit) {
       await loadScript('assets/carousel.js');
     }
   };

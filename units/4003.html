@@ -1,1 +1,24 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Grand Caribbean Condo Guide</title><script>const u=location.pathname.split('/').pop().replace(/\.html$/i,'');location.replace('../condos/'+encodeURIComponent(u)+'.html'+location.search+location.hash);</script></head><body><p>Opening the current condo page… <a href="../index.html#units">Browse all condos</a>.</p></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Grand Caribbean Condo Guide</title>
+  <script>
+    (() => {
+      const fileName = window.location.pathname.split('/').pop() || '';
+      const unit = fileName.replace(/\.html$/i, '');
+      const suffix = `${window.location.search}${window.location.hash}`;
+      const destination = /^\d{4}$/.test(unit)
+        ? `../condos/${unit}.html${suffix}`
+        : '../index.html#units';
+
+      window.location.replace(destination);
+    })();
+  </script>
+</head>
+<body>
+  <p>Opening the current condo page… <a href="../index.html#units">Browse all condos</a>.</p>
+</body>
+</html>
