@@ -9,19 +9,15 @@
 </head>
 <body>
   <header class="site-header">
-    <a class="brand" href="./" aria-label="Grand Caribbean Condo Guide home">
-      <span class="brand-mark">☀</span>
-      <span>Grand Caribbean</span>
-    </a>
+    <a class="brand" href="./" aria-label="Grand Caribbean Condo Guide home"><span class="brand-mark">☀</span><span>Grand Caribbean</span></a>
     <span class="header-note">Port Aransas, Texas</span>
   </header>
-
   <main>
     <section class="hero">
       <div class="hero-copy">
         <p class="eyebrow">Independent condo guide</p>
         <h1>Find a Grand Caribbean unit and who rents it.</h1>
-        <p class="lede">Search the units we have identified from on-site photos. Where a registration sign was visible, the posted maximum occupancy, STR or registration number, rental contact, and phone number are included.</p>
+        <p class="lede">Browse all 40 condos. Where a registration sign was visible, the posted maximum occupancy, STR or registration number, rental contact, and phone number are included; unknown fields remain visible rather than being guessed.</p>
         <a class="button primary" href="#units">Browse units</a>
       </div>
       <figure class="hero-photo">
@@ -32,52 +28,23 @@
 
     <section class="search-panel" id="units" aria-labelledby="units-heading">
       <div class="section-heading">
-        <div>
-          <p class="eyebrow">Condo directory</p>
-          <h2 id="units-heading">Search observed units</h2>
-        </div>
+        <div><p class="eyebrow">Condo directory</p><h2 id="units-heading">Search all units</h2></div>
         <p id="result-count" class="result-count" aria-live="polite"></p>
       </div>
-
       <div class="filters">
-        <label>
-          <span>Search</span>
-          <input id="search" type="search" placeholder="Unit, manager, phone, STR…" autocomplete="off">
-        </label>
-        <label>
-          <span>Floor</span>
-          <select id="floor-filter">
-            <option value="">All floors</option>
-            <option value="1">1st floor</option>
-            <option value="2">2nd floor</option>
-            <option value="3">3rd floor</option>
-            <option value="4">4th floor</option>
-          </select>
-        </label>
-        <label>
-          <span>Max occupancy</span>
-          <select id="occupancy-filter">
-            <option value="">Any / unknown</option>
-            <option value="6">6</option>
-            <option value="8">8</option>
-          </select>
-        </label>
+        <label><span>Search</span><input id="search" type="search" placeholder="Unit, manager, phone, STR…" autocomplete="off"></label>
+        <label><span>Floor</span><select id="floor-filter"><option value="">All floors</option><option value="1">1st floor</option><option value="2">2nd floor</option><option value="3">3rd floor</option><option value="4">4th floor</option></select></label>
+        <label><span>Max occupancy</span><select id="occupancy-filter"><option value="">Any / unknown</option><option value="4">4</option><option value="6">6</option><option value="8">8</option></select></label>
       </div>
-
       <div id="condo-grid" class="condo-grid"></div>
       <p id="empty-state" class="empty-state" hidden>No matching units yet. Try a different search or filter.</p>
     </section>
 
     <section class="property-notes">
-      <div class="section-heading">
-        <div>
-          <p class="eyebrow">What the photos show</p>
-          <h2>A bright, open-air coastal complex</h2>
-        </div>
-      </div>
+      <div class="section-heading"><div><p class="eyebrow">What the photos show</p><h2>A bright, open-air coastal complex</h2></div></div>
       <div class="notes-layout">
         <div class="note-copy">
-          <p>The on-site photos show the complex’s distinctive yellow exterior, open-air walkways, and broad upper-floor views across the surrounding low coastal landscape. Several third- and fourth-floor doors were also photographed, helping confirm unit numbers even where no rental placard was visible.</p>
+          <p>The on-site photos show the complex’s distinctive yellow exterior, open-air walkways, and broad upper-floor views across the surrounding low coastal landscape. Door and placard photos also confirm a growing set of unit numbers, occupancy limits, registration numbers, and rental contacts.</p>
           <p class="disclaimer">This is a reference guide, not the property manager or booking agent. Rental contacts and permit information are transcribed from signs visible at the property and can change. Confirm current details before booking.</p>
         </div>
         <div class="mini-gallery">
@@ -88,11 +55,7 @@
       </div>
     </section>
   </main>
-
-  <footer>
-    <p>Grand Caribbean Condo Guide · Photo-informed reference updated August 2026.</p>
-  </footer>
-
+  <footer><p>Grand Caribbean Condo Guide · Photo-informed reference updated August 2026.</p></footer>
   <script src="condo-data.js"></script>
   <script src="app.js"></script>
 </body>
